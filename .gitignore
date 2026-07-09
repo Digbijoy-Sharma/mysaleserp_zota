@@ -1,0 +1,34 @@
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/storage/logs/*.log
+/storage/framework/cache/data
+/storage/framework/sessions
+/storage/framework/testing
+/storage/framework/views
+/vendor
+.env
+.env.backup
+.env.production
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+/.idea
+/.vscode
+.DS_Store
+Thumbs.db
+/.fleet
+/.nova
+
+# Composer's vendor directories (e.g. when running scripts)
+/vendor-bin/**/vendor
+
+# Laravel Pulse
+/storage/pulse
+
+# Laravel Horizon
+/horizon

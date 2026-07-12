@@ -1,0 +1,20 @@
+@extends('layouts.app')
+@section('title', 'Edit Central Product')
+
+@section('content')
+<div class="tw-min-h-screen tw-bg-gray-50 tw-p-6">
+    <div class="tw-max-w-5xl tw-mx-auto">
+        <h1 class="tw-text-2xl tw-font-bold tw-text-gray-900 tw-mb-1">Edit Central Product</h1>
+        <p class="tw-text-sm tw-text-gray-600 tw-mb-6">SKU: <span class="tw-font-mono">{{ $product->sku }}</span></p>
+
+        <form method="post" action="{{ route('super.products.update', $product->id) }}" class="tw-bg-white tw-rounded-lg tw-shadow tw-p-6">
+            @csrf @method('PUT')
+            @include('superadmin.products._form', ['product' => $product, 'stores' => $stores, 'assigned' => $assigned])
+            <div class="tw-mt-6 tw-flex tw-gap-2">
+                <button class="tw-bg-emerald-600 tw-text-white tw-px-5 tw-py-2 tw-rounded">Save</button>
+                <a href="{{ route('super.products.index') }}" class="tw-bg-gray-200 tw-text-gray-800 tw-px-5 tw-py-2 tw-rounded">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection

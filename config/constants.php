@@ -91,4 +91,15 @@ return [
     'show_payment_type_on_contact_pay' => false,
     'enable_gst_report_india' => env('ENABLE_GST_REPORT_INDIA', false),
     'enable_secondary_unit' => false, //Experimental feature, may depreciate
+
+    //---------------------------------------------------------
+    // Dava India — multi-store pharmacy chain
+    //---------------------------------------------------------
+    'dava_india' => [
+        'enabled' => env('DAVA_INDIA_ENABLED', true),
+        'central_catalog_enabled' => env('DAVA_CENTRAL_CATALOG_ENABLED', true),
+        'central_vendors_enabled' => env('DAVA_CENTRAL_VENDORS_ENABLED', true),
+        'multi_location_enabled' => env('DAVA_MULTI_LOCATION_ENABLED', false),
+        'superadmin_permission' => 'superadmin.access',
+    ],
 ];

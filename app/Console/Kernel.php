@@ -35,6 +35,12 @@ class Kernel extends ConsoleKernel
 
         }
 
+        // Dava India — daily stock alert digest (any env where enabled)
+        if (config('dava.enabled') && config('dava.reports.stock_alert_digest')) {
+            $time = config('dava.reports.stock_alert_digest_time', '09:00');
+            $schedule->command('dava:daily-stock-alert')->dailyAt($time);
+        }
+
         if ($env === 'demo') {
             //IMPORTANT NOTE: This command will delete all business details and create dummy business, run only in demo server.
             $schedule->command('pos:dummyBusiness')

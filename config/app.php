@@ -192,6 +192,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\ModuleAssetServiceProvider::class,
+        App\Providers\DavaIndiaServiceProvider::class,
 
         Collective\Html\HtmlServiceProvider::class,
         //Yajra\Datatables\DatatablesServiceProvider::class,

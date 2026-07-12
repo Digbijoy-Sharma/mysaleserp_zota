@@ -35,8 +35,32 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    /**
+     * Dava India — mass-assignable super-admin flags.
+     */
+    protected $fillable = [
+        'surname', 'first_name', 'last_name', 'username', 'email', 'password',
+        'language', 'business_id', 'is_superadmin', 'created_by_superadmin',
+    ];
+
     // change api guard to web
     protected $guard_name = 'web';
+
+    /**
+     * Dava India — return true if the user is a super admin.
+     */
+    public function isSuperadmin(): bool
+    {
+        return (int) $this->is_superadmin === 1;
+    }
+
+    /**
+     * Dava India — Spatie permission name granting super-admin access.
+     */
+    public static function superadminPermissionName(): string
+    {
+        return config('constants.dava_india.superadmin_permission', 'superadmin.access');
+    }
 
     /**
      * The attributes that should be mutated to dates.

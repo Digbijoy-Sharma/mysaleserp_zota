@@ -103,7 +103,6 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('service-staff-availability', [SellPosController::class, 'showServiceStaffAvailibility']);
     Route::get('pause-resume-service-staff-timer/{user_id}', [SellPosController::class, 'pauseResumeServiceStaffTimer']);
     Route::get('mark-as-available/{user_id}', [SellPosController::class, 'markAsAvailable']);
-
     Route::resource('purchase-requisition', PurchaseRequisitionController::class)->except(['edit', 'update']);
     Route::post('/get-requisition-products', [PurchaseRequisitionController::class, 'getRequisitionProducts'])->name('get-requisition-products');
     Route::get('get-purchase-requisitions/{location_id}', [PurchaseRequisitionController::class, 'getPurchaseRequisitions']);
@@ -532,3 +531,8 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone'])
     Route::get('/show-notification/{id}', [HomeController::class, 'showNotification']);
     Route::post('/sell/check-invoice-number', [SellController::class, 'checkInvoiceNumber']);
 });
+
+// Dava India — Super Admin routes (Phase 1+)
+if (file_exists(__DIR__ . '/superadmin.php')) {
+    require_once __DIR__ . '/superadmin.php';
+}

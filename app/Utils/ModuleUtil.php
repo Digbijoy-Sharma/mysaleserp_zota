@@ -57,6 +57,21 @@ class ModuleUtil extends Util
     {
         $modules = Module::toCollection()->toArray();
 
+        // Dava India: skip modules that are explicitly disabled in
+        // modules_statuses.json. Without this, disabled modules can still
+        // run their modifyAdminMenu hook and register menu items that
+        // reference non-existent controllers (because the module's routes
+        // are not registered when disabled).
+        $modules_statuses = [];
+        try {
+            $modules_path = base_path('modules_statuses.json');
+            if (file_exists($modules_path)) {
+                $modules_statuses = json_decode(file_get_contents($modules_path), true) ?: [];
+            }
+        } catch (\Throwable $e) {
+            $modules_statuses = [];
+        }
+
         // Batch-load all module versions in a single query instead of querying individually
         $version_keys = [];
         $module_name_map = [];
@@ -93,6 +108,16 @@ class ModuleUtil extends Util
         $data = [];
         if (! empty($installed_modules)) {
             foreach ($installed_modules as $module) {
+                // Dava India: skip modules explicitly disabled in
+                // modules_statuses.json so their hooks don't try to
+                // reference non-existent controllers.
+                $moduleName = $module['name'];
+                $moduleNameLower = strtolower($moduleName);
+                $status = $modules_statuses[$moduleName] ?? ($modules_statuses[$moduleNameLower] ?? null);
+                if ($status === false || $status === 'disabled' || $status === 0 || $status === '0') {
+                    continue;
+                }
+
                 $class = 'Modules\\'.$module['name'].'\Http\Controllers\DataController';
 
                 if (class_exists($class)) {

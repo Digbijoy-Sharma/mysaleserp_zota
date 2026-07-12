@@ -89,7 +89,12 @@ class LoginController extends Controller
     {
         $this->businessUtil->activityLog($user, 'login', null, [], false, $user->business_id);
 
-        if (! $user->business->is_active) {
+        // Dava India: super admin has no business — skip business-level checks.
+        $isSuper = config('dava.enabled', false)
+            && method_exists($user, 'isSuperadmin')
+            && $user->isSuperadmin();
+
+        if (! $isSuper && ! $user->business->is_active) {
             \Auth::logout();
 
             return redirect('/login')
@@ -127,6 +132,14 @@ class LoginController extends Controller
     protected function redirectTo()
     {
         $user = \Auth::user();
+
+        // Dava India: Super Admin always lands on the central /super dashboard.
+        if (config('dava.enabled', false)
+            && method_exists($user, 'isSuperadmin')
+            && $user->isSuperadmin()) {
+            return '/super';
+        }
+
         if (! $user->can('dashboard.data') && $user->can('sell.create')) {
             return '/pos/create';
         }

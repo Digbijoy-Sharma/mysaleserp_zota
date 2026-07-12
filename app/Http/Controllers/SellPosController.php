@@ -591,6 +591,45 @@ class SellPosController extends Controller
                     ];
                     $this->transactionUtil->mapPurchaseSell($business, $transaction->sell_lines, 'purchase');
 
+                    // Dava India: re-allocate batches using FEFO (First-Expiry-First-Out)
+                    // so pharmacy stock leaves the earliest-expiring batch first.
+                    if (function_exists('dava_pos_use_fefo') && dava_pos_use_fefo()) {
+                        try {
+                            app(\App\Services\DavaFefoHook::class)
+                                ->applyFefoAfterMapping(
+                                    $business_id,
+                                    $input['location_id'],
+                                    $transaction->sell_lines
+                                );
+                        } catch (\Throwable $e) {
+                            \Log::error('Dava India FEFO hook failed: ' . $e->getMessage());
+                        }
+                    }
+
+                    // Dava India: pharmacy guard — block expired batches, warn on
+                    // schedule-H/H1/X drugs that have no prescription number.
+                    if (config('dava.enabled', false)) {
+                        try {
+                            $guardResult = app(\App\Services\DavaPosGuard::class)->assertCanSell(
+                                $business_id,
+                                $input['location_id'],
+                                $transaction->sell_lines,
+                                $input['prescription_no'] ?? null
+                            );
+                            if (! empty($guardResult['warnings'])) {
+                                $msg = collect($guardResult['warnings'])->pluck('msg')->implode(' / ');
+                                $output['dava_warnings'] = $guardResult['warnings'];
+                                $output['dava_warning_msg'] = $msg;
+                            }
+                        } catch (\RuntimeException $e) {
+                            DB::rollBack();
+                            $output = ['success' => 0, 'msg' => $e->getMessage()];
+                            return $output;
+                        } catch (\Throwable $e) {
+                            \Log::error('Dava India POS guard failed: ' . $e->getMessage());
+                        }
+                    }
+
                     //Auto send notification
                     $whatsapp_link = $this->notificationUtil->autoSendNotification($business_id, 'new_sale', $transaction, $transaction->contact);
 
@@ -1432,6 +1471,20 @@ class SellPosController extends Controller
                         'pos_settings' => $pos_settings,
                     ];
                     $this->transactionUtil->adjustMappingPurchaseSell($status_before, $transaction, $business, $deleted_lines);
+
+                    // Dava India: re-allocate batches using FEFO after status change
+                    if (function_exists('dava_pos_use_fefo') && dava_pos_use_fefo()) {
+                        try {
+                            app(\App\Services\DavaFefoHook::class)
+                                ->applyFefoAfterMapping(
+                                    $business_id,
+                                    $input['location_id'],
+                                    $transaction->sell_lines
+                                );
+                        } catch (\Throwable $e) {
+                            \Log::error('Dava India FEFO hook (adjustMapping) failed: ' . $e->getMessage());
+                        }
+                    }
 
                     //Auto send notification
                     $whatsapp_link = $this->notificationUtil->autoSendNotification($business_id, 'new_sale', $transaction, $transaction->contact);

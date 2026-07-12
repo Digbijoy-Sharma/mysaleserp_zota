@@ -1,4 +1,5 @@
-@extends('layouts.app')
+@extends('layouts.superadmin')
+@php $current = 'stores'; @endphp
 @section('title', 'Stores — Dava India')
 
 @section('content')

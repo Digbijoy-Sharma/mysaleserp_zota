@@ -90,4 +90,10 @@ Route::middleware(['setData', 'auth', 'EnsureSuperAdmin', 'language', 'timezone'
         // FEFO JSON API (used by POS)
         Route::get('/api/fefo/{variation}', [\App\Http\Controllers\Superadmin\CentralProductController::class, 'fefo'])
             ->name('api.fefo');
+
+        // Runtime POS settings (Dava India — Phase 6)
+        Route::get('/settings/pos', [\App\Http\Controllers\Superadmin\PosSettingsController::class, 'index'])
+            ->name('settings.pos');
+        Route::post('/settings/pos', [\App\Http\Controllers\Superadmin\PosSettingsController::class, 'save'])
+            ->name('settings.pos.save');
     });

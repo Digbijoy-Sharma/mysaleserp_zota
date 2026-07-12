@@ -1,4 +1,5 @@
-@extends('layouts.app')
+@extends('layouts.superadmin')
+@php $current = 'users'; @endphp
 @section('title', 'New User')
 
 @section('content')

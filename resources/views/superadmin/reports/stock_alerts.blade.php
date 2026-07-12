@@ -1,4 +1,5 @@
-@extends('layouts.app')
+@extends('layouts.superadmin')
+@php $current = 'stock-alerts'; @endphp
 @section('title', 'Stock Alerts — Dava India')
 
 @section('content')

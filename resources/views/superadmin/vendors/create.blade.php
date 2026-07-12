@@ -1,4 +1,5 @@
-@extends('layouts.app')
+@extends('layouts.superadmin')
+@php $current = 'vendors'; @endphp
 @section('title', 'Add Central Vendor')
 
 @section('content')

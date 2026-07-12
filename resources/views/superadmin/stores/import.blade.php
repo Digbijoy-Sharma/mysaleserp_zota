@@ -1,4 +1,5 @@
-@extends('layouts.app')
+@extends('layouts.superadmin')
+@php $current = 'stores'; @endphp
 @section('title', 'Bulk Import Stores')
 
 @section('content')

@@ -20,9 +20,10 @@ class Timezone
 
         if (session()->has('business.time_zone')) {
             $timezone = $request->session()->get('business.time_zone');
-        } else {
+        } elseif (Auth::check() && Auth::user()->business) {
             $timezone = Auth::user()->business->time_zone;
         }
+        // If no business is attached (e.g. Dava India Super Admin), keep app default timezone.
 
         config(['app.timezone' => $timezone]);
         date_default_timezone_set($timezone);

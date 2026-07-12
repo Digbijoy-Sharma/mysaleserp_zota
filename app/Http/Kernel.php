@@ -71,5 +71,6 @@ class Kernel extends HttpKernel
         'superadmin' => \App\Http\Middleware\Superadmin::class,
         'CheckUserLogin' => \App\Http\Middleware\CheckUserLogin::class,
         'EnsureSuperAdmin' => \App\Http\Middleware\EnsureSuperAdmin::class,
+        'RedirectSuperAdminFromBusinessRoutes' => \App\Http\Middleware\RedirectSuperAdminFromBusinessRoutes::class,
     ];
 }
